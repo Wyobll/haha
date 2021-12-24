@@ -12,7 +12,7 @@
 
 安装相关软件包
               yum -y install qemu -kvm openssl libvirt net-tools
-
+              
 开启 libvirt
               systemctl start libvirtd
  查看是否开启
