@@ -1,6 +1,6 @@
-#随随便便的一些笔记
+# 随随便便的一些笔记
 
-##wc
+## wc
 wc命令用于统计指定文件中的字节数、字数、行数，并将统计结果显示输出。wc是word count的缩写，即统计单词数。
 
 如果我想知道一个文件里有多少字？多少行？多少字符？
@@ -23,7 +23,7 @@ wc这个命令就可以帮我们计算输出整体数据
 
 
 
-##还原系统破解密码
+## 还原系统破解密码
 
  （1）开机启动，到内核界面，按 #e
  （2）找到linux16哪一行，跳到行尾，空格输入 #rd.break console=tty0 
@@ -41,7 +41,7 @@ switch_root:/# mount -o remount,rw / /sysroot
 
 
 
-##编写shell脚本、使用for循环输出1至100.
+## 编写shell脚本、使用for循环输出1至100.
 
 !/bin/bash
 vim forin.sh
@@ -57,7 +57,7 @@ done
 sh forin.sh
 
 
-##磁盘分区
+## 磁盘分区
 fdisk -l (查看磁盘 /dev/vda是系统盘，其他为新增盘)
 fdisk 硬盘设备
 fdisk /dev/vdb(新增盘)
