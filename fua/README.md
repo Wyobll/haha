@@ -91,3 +91,57 @@ fdisk /dev/vdb(新增盘)
   mkdir /mnt/part 新建挂载点
   mount /dev/vdb /mnt/part 挂载至/mnt/part上
   df -Th 查看是否挂载成功
+
+
+
+ # 交换空间（虚拟内存）
+ 
+ 
+ ## 一，利用未使用的分区空间制作交换空间
+ 
+ [root@wy~]# ls /dev/sdb1
+ [root@wy~]# mkswap /dev/sdb1  #格式化交换文件系统
+ [root@wy~]# blkid /dev/sdb1  #查看文件系统
+ 
+ [root@wy~]# swapon /dev/sdb1  #启用交换分区
+ [root@wy~]# swapon   #查看组成交换空间的成员信息
+ [root@wy~]# free -m #查看交换空间总共的大小
+
+ [root@wy~]# swapoff /dev/sdb1  #停用交换分区
+ [root@wy~]# swapon   #查看组成交换空间的成员信息
+ [root@wy~]# free -m   #查看交换空间总共的大小
+
+ [root@wy~]# vim /etc/fstab #开机自动启用交换分区
+            /dev/sdc1 swap swap defaults 0 0
+ [root@wy~]# swapon
+ [root@wy~]# swapon -a #专门用于检测交换分区
+ [root@wy~]# swapon
+
+ ## 二,利用一个文件，进行制作交换空间
+
+ ### 1.生成一个2G的文件
+ – dd if=源设备 of=目标设备 bs=块大小 count=次数
+ [root@wy~]# ls /dev/zero #永远产生数据
+ [root@wy~]# dd if=/dev/zero of=/dev/sdb1 bs=1M count=512M
+
+ [root@wy~]# du -sh /dev/sdb1 #查看占用磁盘空间大小
+
+ ### 2.利用文件占用空间，充当交换空间
+ [root@wy~]# mkswap /dev/sdb1  #格式化交换文件系统
+ [root@wy~]# swapon /dev/sdb1  #启用交换文件
+ swapon: /dev/sdb1：不安全的权限 0644，建议使用 0600。
+ [root@wy~]# swapon  #查看交接空间组成的成员信息
+
+
+
+ # 逻辑卷的创建与管理
+
+ 创建分区-创建物理卷-创建卷组-创建逻辑卷
+
+1、创建分区
+此时挂载一块20G的硬盘，sdb
+使用fdisk进行分区
+先按p，然后一直回车即可，最后按w保存退出
+格式化分区，mkfs，使用xfs格式
+[root@wy~]# mkfs.xfs /dev/sdb1
+
