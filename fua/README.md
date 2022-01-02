@@ -131,16 +131,21 @@ fdisk /dev/vdb(新增盘)
 
  ### 1.生成一个512M的文件
  – dd if=源设备 of=目标设备 bs=块大小 count=次数
- [root@wy~]# ls /dev/zero #永远产生数据
+ [root@wy~]# ls /dev/zero 
+           # 永远产生数据
  [root@wy~]# dd if=/dev/zero of=/dev/sdb1 bs=1M count=512M
 
- [root@wy~]# du -sh /dev/sdb1 #查看占用磁盘空间大小
+ [root@wy~]# du -sh /dev/sdb1 
+           # 查看占用磁盘空间大小
 
  ### 2.利用文件占用空间，充当交换空间
- [root@wy~]# mkswap /dev/sdb1  #格式化交换文件系统
- [root@wy~]# swapon /dev/sdb1  #启用交换文件
+ [root@wy~]# mkswap /dev/sdb1  
+           # 格式化交换文件系统
+ [root@wy~]# swapon /dev/sdb1  
+           # 启用交换文件
  swapon: /dev/sdb1：不安全的权限 0644，建议使用 0600。
- [root@wy~]# swapon  #查看交接空间组成的成员信息
+ [root@wy~]# swapon  
+           # 查看交接空间组成的成员信息
 
 
 
