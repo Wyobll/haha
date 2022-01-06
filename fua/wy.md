@@ -27,19 +27,19 @@ wc这个命令就可以帮我们计算输出整体数据***
 
 ## 还原系统破解密码
 
-> （1）开机启动，到内核界面，按 #e
->  （2）找到linux16哪一行，跳到行尾，空格输入 #rd.break console=tty0 
->  按ctrl + x 。
->  （3）界面跳转到 （switch_root:/# ）,代表进入了紧急救援模式
->  （4）获取修改密码的权限：把系统真实根目录以读写权限临时挂载到当前紧急救援模式下
-> switch_root:/# mount -o remount,rw / /sysroot
->  （5）把当前紧急救援模式根目录切换到/sysroot
->         #chroot /sysroot （终端由switch_root:/切换为 sh-4.2）
->  （6）修改密码 #passwd
->  （7） 重置SELinux（上下文标记），#touch /.autorelabel 
->  （有这个文件，系统就会重置SELinux）
->  （8）退出当前当前目录 exit 
->  （9）重启 #reboot
+> * 开机启动，到内核界面，按 #e
+> * 找到linux16哪一行，跳到行尾，空格输入 #rd.break console=tty0 
+>    按ctrl + x 。
+> * 界面跳转到 （switch_root:/# ）,代表进入了紧急救援模式
+> * 获取修改密码的权限：把系统真实根目录以读写权限临时挂载到当前紧急救援模式下
+>   switch_root:/# mount -o remount,rw / /sysroot
+> * 把当前紧急救援模式根目录切换到/sysroot
+>           #chroot /sysroot （终端由switch_root:/切换为 sh-4.2）
+> * 修改密码 #passwd
+> *  重置SELinux（上下文标记），#touch /.autorelabel 
+>    （有这个文件，系统就会重置SELinux）
+> * 退出当前当前目录 exit 
+> * 重启 #reboot
 
 ---
 
