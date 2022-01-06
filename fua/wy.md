@@ -138,10 +138,59 @@ swapon: /dev/sdb1：不安全的权限 0644，建议使用 0600。
 
 * 创建分区-创建物理卷-创建卷组-创建逻辑卷
 
+  ---
+
 > 1、创建分区
+>
 > 此时挂载一块20G的硬盘，sdb
 > 使用fdisk进行分区
+>
+> [root@wy~]# **fdisk /dev/sdb**
+>
 > 先按p，然后一直回车即可，最后按w保存退出
-> 格式化分区，mkfs，使用xfs格式
-> [root@wy~]# mkfs.xfs /dev/sdb1
+> 格式化分区
+>
+> mkfs，使用xfs格式
+>
+> [root@wy~]# **mkfs.xfs /dev/sdb1**
+
+---
+
+> 2、创建物理卷
+>
+> [root@wy~]# **pvcreate /dev/sdb1**
+>
+> 查看：pvs或pvdisplay
+
+---
+
+> 3、创建卷组
+>
+> [root@wy~]# **vgcreate myvg /dev/sdb1**
+>
+> 查看：vgs或vgdisplay
+
+---
+
+> 4、创建逻辑卷
+>
+> [root@wy~]# **lvcreate -L 1G -n <u>mylv</u> <u>myvg</u>**
+>
+> ​                                            <u>逻辑卷名称</u> <u>基于卷组名</u>
+>
+> 使用命令lvdisplay查看：
+>
+> [root@wt~]# **lvdisplay | grep mylv**
+>
+> 使用mkfs进行格式化：
+>
+> [root@wy~]# **mkfs.xfs /dev/myvg/mylv**
+>
+> 挂载到/mnt/lv101目录下：
+>
+> [root@wy~]# **mount /dev/myvg/mylv /mnt/lv101**
+>
+> 查看：
+>
+> [root@wy~]# **df -Tf /mnt/lv101**
 
