@@ -1,4 +1,10 @@
-# kvm
+# kvm切换器
+* ***Keyboard 键盘*** 
+* ***Video 显示器***
+* ***Mouse 鼠标***
+
+<u>通过适当的键盘，鼠标，显示器的配置，实现系统和网络的集中管理</u>（Linux下的内核虚拟化模块）
+
 > 开启虚拟化功能
 
 > 关闭防火墙和SE l inux
@@ -16,9 +22,9 @@
 
 > 查看虚拟化功能是否安装成功开启
 
-           ```shell
-           [root@wy~]#grep -E “（vmx）|（svm）”/proc/cpuinfo
-           ```
+```shell
+ [root@wy~]#grep -E “（vmx）|（svm）”/proc/cpuinfo
+```
 
 > 安装相关软件包
 
