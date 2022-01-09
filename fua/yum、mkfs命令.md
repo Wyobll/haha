@@ -214,7 +214,7 @@ This filesystem will be automatically checked every 34 mounts or
 
 
 
-* li:
+![mkfs](../images/mkfs.png)
 
-
+![mkfs2](../images/mkfs2.png)
 
