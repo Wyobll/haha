@@ -170,7 +170,7 @@ mkfs.vfat
 * 将分区 /dev/hdc6（可指定你自己的分区） 格式化为 ext3 文件系统：
 
 ```shell
-[root@www ~]# mkfs -t ext3 /dev/sdb6
+[root@wy ~]# mkfs -t ext3 /dev/sdb6
 mke2fs 1.39 (29-May-2006)
 Filesystem label=                < ==这里指的是分割槽的名称(label)
 OS type: Linux
@@ -203,7 +203,7 @@ This filesystem will be automatically checked every 34 mounts or
 >  **在 /dev/hda5 上建一个 msdos 的档案系统，同时检查是否有坏轨存在，并且将过程详细列出来 ：**
 >
 > ```shell
-> [root@wy~]#mkfs -V -t msdos -c /dev/hda5
+> [root@wy~]#mkfs -V -t msdos -c /dev/sda5
 > 
 > [root@wy~]#mfks -t ext3 /dev/sda6  
 > //将sda6分区格式化为ext3格式
