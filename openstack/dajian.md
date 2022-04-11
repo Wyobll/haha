@@ -335,5 +335,186 @@ MariaDB [(none)]>exit   #退出
 [root@controller ~]#**vi /etc/keystone/keystone.conf**
 
 ```shell
+[database]
+# ...
+connection = mysql+pymysql://keystone:000000@controller/keystone
+#配置数据库访问
+[token]
+# ...
+provider = fernet #配置fernet令牌
 ```
 
+#### 填充身份服务数据库：
+
+[root@controller ~]#su -s /bin/sh -c "keystone-manage db_sync" keystone
+
+#### 初始化fernet密匙存储库：
+
+[root@controller ~]# keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+
+[root@controller ~]# keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+
+#### 引导标识服务：
+
+[root@controller ~]# keystone-manage bootstrap --bootstrap-password 000000 \
+  --bootstrap-admin-url http://controller:5000/v3/ \
+  --bootstrap-internal-url http://controller:5000/v3/ \
+  --bootstrap-public-url http://controller:5000/v3/ \
+  --bootstrap-region-id RegionOne
+
+#### 配置 Apache HTTP 服务器：
+
+[root@controller ~]# **vi /etc/httpd/conf/httpd.confServerName**
+
+```shell
+ServerName controller
+```
+
+#### 创建链接：
+
+[root@controller ~]# ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d
+
+#### 启动服务：
+
+[root@controller ~]# systemctl enable httpd.service
+
+[root@controller ~]# systemctl start httpd.service
+
+> [root@controller ~]# systemctl status httpd.service
+>
+> ● httpd.service - The Apache HTTP Server
+>    Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+>   Drop-In: /usr/lib/systemd/system/httpd.service.d
+>            └─openstack-dashboard.conf
+>    Active: active (running) since 五 2022-04-01 12:54:37 CST; 8h ago
+>      Docs: man:httpd(8)
+>            man:apachectl(8)
+>   Process: 130705 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=0/SUCCESS)
+>   Process: 130764 ExecStartPre=/usr/bin/python2 /usr/share/openstack-dashboard/manage.py compress --force -v0 (code=exited, status=0/SUCCESS)
+>   Process: 130733 ExecStartPre=/usr/bin/python2 /usr/share/openstack-dashboard/manage.py collectstatic --noinput --clear -v0 (code=exited, status=0/SUCCESS)
+>  Main PID: 130790 (httpd)
+>    Status: "Total requests: 2648; Current requests/sec: 0; Current traffic:   0 B/sec"
+>    CGroup: /system.slice/httpd.service
+>            ├─   602 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16822 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16827 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16830 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16832 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16833 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 16834 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 17099 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 17103 /usr/sbin/httpd -DFOREGROUND
+>            ├─ 17104 /usr/sbin/httpd -DFOREGROUND
+>            ├─130790 /usr/sbin/httpd -DFOREGROUND
+>            ├─130792 /usr/sbin/httpd -DFOREGROUND
+>            ├─130793 /usr/sbin/httpd -DFOREGROUND
+>            ├─130794 /usr/sbin/httpd -DFOREGROUND
+>            ├─130795 /usr/sbin/httpd -DFOREGROUND
+>            ├─130796 /usr/sbin/httpd -DFOREGROUND
+>            ├─130797 /usr/sbin/httpd -DFOREGROUND
+>            ├─130798 /usr/sbin/httpd -DFOREGROUND
+>            ├─130799 /usr/sbin/httpd -DFOREGROUND
+>            ├─130800 /usr/sbin/httpd -DFOREGROUND
+>            ├─130801 /usr/sbin/httpd -DFOREGROUND
+>            ├─130802 /usr/sbin/httpd -DFOREGROUND
+>            ├─130803 /usr/sbin/httpd -DFOREGROUND
+>            ├─130804 (wsgi:keystone- -DFOREGROUND
+>            ├─130805 (wsgi:keystone- -DFOREGROUND
+>            ├─130806 (wsgi:keystone- -DFOREGROUND
+>            ├─130807 (wsgi:keystone- -DFOREGROUND
+>            └─130808 (wsgi:keystone- -DFOREGROUND
+>
+> 4月 01 12:54:10 controller systemd[1]: Starting The Apache HTTP Server...
+> 4月 01 12:54:37 controller python2[130764]: Compressing... done
+> 4月 01 12:54:37 controller python2[130764]: Compressed 7 block(s) from 4 templ....
+> 4月 01 12:54:37 controller systemd[1]: Started The Apache HTTP Server.
+> Hint: Some lines were ellipsized, use -l to show in full.
+
+#### 配置环境变量：
+
+```
+$ export OS_USERNAME=admin
+$ export OS_PASSWORD=000000
+$ export OS_PROJECT_NAME=admin
+$ export OS_USER_DOMAIN_NAME=Default
+$ export OS_PROJECT_DOMAIN_NAME=Default
+$ export OS_AUTH_URL=http://controller:5000/v3
+$ export OS_IDENTITY_API_VERSION=3
+```
+
+#### 创建域：
+
+[root@controller ~]# openstack domain create --description "An Example Domain" example
+
+```
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | An Example Domain                |
+| enabled     | True                             |
+| id          | 2f4f80574fd84fe6ba9067228ae0a50c |
+| name        | example                          |
+| tags        | []                               |
++-------------+----------------------------------+
+```
+
+#### 创建项目：service
+
+[root@controller ~]# openstack project create --domain default \
+
+-> --description "Service Project" service
+
+```
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Service Project                  |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 24ac7f19cd944f4cba1d77469b2a73ed |
+| is_domain   | False                            |
+| name        | service                          |
+| parent_id   | default                          |
+| tags        | []                               |
++-------------+----------------------------------+
+```
+
+#### 创建项目：myproject
+
+[root@controller ~]# openstack project create --domain default \
+  --description "Demo Project" myproject
+
+```
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Demo Project                     |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 231ad6e7ebba47d6a1e57e1cc07ae446 |
+| is_domain   | False                            |
+| name        | myproject                        |
+| parent_id   | default                          |
+| tags        | []                               |
++-------------+----------------------------------+
+```
+
+#### 创建用户：myuser
+
+[root@controller ~]# openstack user create --domain default \
+  --password-prompt myuser
+
+```
+User Password:000000
+Repeat User Password:000000
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| domain_id           | default                          |
+| enabled             | True                             |
+| id                  | aeda23aa78f44e859900e22c24817832 |
+| name                | myuser                           |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+```
