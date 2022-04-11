@@ -39,7 +39,7 @@ DNS2=8.8.8.8
 > 64 bytes from 220.181.38.148 (220.181.38.148): icmp_seq=3 ttl=128 time=91.3 ms
 > 64 bytes from 220.181.38.148 (220.181.38.148): icmp_seq=4 ttl=128 time=88.2 ms
 >
-> ###### ctrl+c 退出
+> ctrl+c 退出
 
 #### 修改控制节点controller主机名：
 
