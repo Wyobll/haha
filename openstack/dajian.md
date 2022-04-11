@@ -86,7 +86,7 @@ hostnamectl set-hostname compute
 
 > 查看SELINUX状态：
 >
-> getenforce
+> #getenforce
 >
 > ‘Permissive’
 
@@ -106,9 +106,9 @@ wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-B
 
 #### controller：
 
-*yum install chrony -y*
+[root@controller ~]#*yum install chrony -y*
 
-**vi /etc/chrony.conf**
+[root@controller ~]#**vi /etc/chrony.conf**
 
 ```
 server ntp1.aliyun.com iburst
@@ -120,10 +120,8 @@ allow 192.168.11.0/24
 
 #### 重新启动 NTP 服务：
 
-```
 [root@controller ~]# systemctl enable chronyd.service
 [root@controller ~]# systemctl start chronyd.service
-```
 
 > [root@controller ~]# systemctl status chronyd.service
 >
@@ -149,9 +147,9 @@ allow 192.168.11.0/24
 
 #### compute：
 
-*yum install chrony*
+[root@compute ~]#*yum install chrony*
 
-**vi /etc/chrony.conf**
+[root@comopute ~]#**vi /etc/chrony.conf**
 
 ```
 server controller iburst
@@ -169,7 +167,7 @@ server controller iburst
 [root@compute ~]# systemctl status chronyd.service
 ```
 
-#### 在两个节点运行以下命令：
+#### 验证chronyd：
 
 ```
 chronyc sources
@@ -183,17 +181,19 @@ chronyc sources
 
 #### 两个节点安装openstack T版包：
 
-*yum install centos-release-openstack-train -y*
+*[root@controller ~]#yum install centos-release-openstack-train -y*
 
 #### 两个节点安装openstack客户端:
 
-*yum install python-openstackclient -y*
+*[root@controller ~]#yum install python-openstackclient -y*
+
+*[root@compute ~]#yum install python-openstackclient -y*
 
 #### controller节点安装数据库:
 
-*yum install mariadb mariadb-server python2-PyMySQL -y*
+[root@controller ~]#*yum install mariadb mariadb-server python2-PyMySQL -y*
 
-**vi /etc/my.cnf.d/openstack.cnf**
+[root@controller ~]#**vi /etc/my.cnf.d/openstack.cnf**
 
 ```shell
 [mysqld]
@@ -207,34 +207,37 @@ character-set-server = utf8
 
 #### **设置数据库开机自启**
 
-systemctl enable mariadb.service
-systemctl start mariadb.service
+[root@controller ~]#systemctl enable mariadb.service
+
+[root@controller ~]#systemctl start mariadb.service
+
+[root@controller ~]#systemctl status mariadb.service
 
 #### 通过运行脚本来保护数据库服务
 
-mysql_secure_installation
+[root@controller ~]#mysql_secure_installation
 
 #### controller:消息队列
 
-*yum install rabbitmq-server -y*
+[root@controller ~]#*yum install rabbitmq-server -y*
 
 启动：
 
-systemctl enable rabbitmq-server.service
+[root@controller ~]#systemctl enable rabbitmq-server.service
 
-systemctl start rabbitmq-server.service
+[root@controller ~]#systemctl start rabbitmq-server.service
 
-systemctl status rabbitmq-server.service
+[root@controller ~]#systemctl status rabbitmq-server.service
 
 #### 添加用户：`openstack`
 
-rabbitmqctl add_user openstack RABBIT_PASS #RABBIT_PASS为消息队列的密码，这时我设置123456
+[root@controller ~]#rabbitmqctl add_user openstack 000000 
 
-Creating user "openstack" ...
+Creating user "openstack" ...   #添加成功
 
 #### 配置、写入和读取访问权限：
 
-rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+[root@controller ~]#rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
 
 
@@ -242,11 +245,11 @@ rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
 #### 安装memcached服务：
 
-*yum install memcached python-memcached*
+[root@controller ~]#*yum install memcached python-memcached*
 
 #### 编辑文件：
 
-vi`/etc/sysconfig/memcached`
+[root@controller ~]#**vi /etc/sysconfig/memcached`**
 
 ```
 OPTIONS="-l 127.0.0.1,::1,controller"
@@ -254,19 +257,19 @@ OPTIONS="-l 127.0.0.1,::1,controller"
 
 #### 启动 memcached 服务：
 
-systemctl enable memcached.service
+[root@controller ~]#systemctl enable memcached.service
 
-systemctl start memcached.service
+[root@controller ~]#systemctl start memcached.service
 
-systemctl status mecached.service
+[root@controller ~]#systemctl status mecached.service
 
-#### Etcd 服务：
+#### 安装 Etcd 服务：
 
-*yum install etcd -y*
+[root@controller ~]#*yum install etcd -y*
 
 #### 编辑 etcd 文件：
 
-vi /etc/etcd/etcd.conf
+[root@controller ~]#**vi /etc/etcd/etcd.conf**
 
 ```
 #[Member]
@@ -284,10 +287,53 @@ ETCD_INITIAL_CLUSTER_STATE="new"
 
 #### 启动 etcd 服务：
 
-systemctl enable etcd
-systemctl start etcd
+[root@controller ~]#systemctl enable etcd
 
+[root@controller ~]#systemctl start etcd
 
+> [root@controller ~]#systemctl status etcd 
+>
+> ● etcd.service - Etcd Server
+>    Loaded: loaded (/usr/lib/systemd/system/etcd.service; enabled; vendor preset: disabled)
+>    Active: active (running) since 四 2022-03-31 20:29:10 CST; 24h ago
+>  Main PID: 11890 (etcd)
+>    CGroup: /system.slice/etcd.service
+>            └─11890 /usr/bin/etcd --name=controller --data-dir=/var/lib/etcd/defa...
+>
+> 3月 31 20:29:10 controller etcd[11890]: cd8cb09a1a22cb3d received MsgVoteResp... 2
+> 3月 31 20:29:10 controller etcd[11890]: cd8cb09a1a22cb3d became leader at term 2
+> 3月 31 20:29:10 controller etcd[11890]: raft.node: cd8cb09a1a22cb3d elected l... 2
+> 3月 31 20:29:10 controller etcd[11890]: setting up the initial cluster versio....3
+> 3月 31 20:29:10 controller etcd[11890]: published {Name:controller ClientURLs...d6
+> 3月 31 20:29:10 controller etcd[11890]: ready to serve client requests
+> 3月 31 20:29:10 controller etcd[11890]: set the initial cluster version to 3.3
+> 3月 31 20:29:10 controller etcd[11890]: enabled capabilities for version 3.3
+> 3月 31 20:29:10 controller etcd[11890]: serving insecure client requests on 1...d!
+> 3月 31 20:29:10 controller systemd[1]: Started Etcd Server.
+> Hint: Some lines were ellipsized, use -l to show in full.
 
 # keystone服务
+
+#### 创建数据库：
+
+```shell
+mysql -uroot -p000000 #登录数据库
+MariaDB [(none)]> CREATE DATABASE keystone;  #创建数据库
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' \
+IDENTIFIED BY '000000';
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' \
+IDENTIFIED BY '000000';
+MariaDB [(none)]>exit   #退出
+```
+
+#### 安装keystone程序包：
+
+[root@controller ~]#*yum install openstack-keystone httpd mod_wsgi*
+
+#### 编辑文件：
+
+[root@controller ~]#**vi /etc/keystone/keystone.conf**
+
+```shell
+```
 
