@@ -176,7 +176,9 @@ chronyc sources
 ```
 
 > 210 Number of sources = 1
-> ##### MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+>
+> MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+>
 > ^* 120.25.115.20                 2   6   377    57    +78ms[  +82ms] +/-  146ms
 
 #### 两个节点安装openstack T版包：
