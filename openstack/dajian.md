@@ -1,8 +1,8 @@
 # 基础环境配置
 
-双节点网络配置：
+#### 双节点网络配置：
 
-vi /etc/sysconfig/network-scripts/ifcfg-eth33
+**vi /etc/sysconfig/network-scripts/ifcfg-eth33**
 
 ```shell
 TYPE=Ethernet
@@ -41,21 +41,21 @@ DNS2=8.8.8.8
 >
 > ###### ctrl+c 退出
 
-修改控制节点controller主机名：
+#### 修改控制节点controller主机名：
 
 ```shell
 hostnamectl set-hostname controller
 ```
 
-修改计算节点compute主机名：
+#### 修改计算节点compute主机名：
 
 ```shell
 hostnamectl set-hostname compute
 ```
 
-双节点配置域名解析：
+#### 双节点配置域名解析：
 
-vi /etc/hosts
+**vi /etc/hosts**
 
 ```shell
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -68,7 +68,7 @@ vi /etc/hosts
 >
 > ping compute
 
-双节点关闭防火墙：
+#### 双节点关闭防火墙：
 
 > systemctl stop firewalld
 > systemctl disable firewalld
@@ -76,7 +76,7 @@ vi /etc/hosts
 > setenforce 0
 >
 
-vi /etc/selinux/config
+**vi /etc/selinux/config**
 
 ```shell
 改SELINUX=disabled
@@ -89,7 +89,7 @@ vi /etc/selinux/config
 >
 > ‘Permissive’
 
-配置双节点yum源163源：
+#### 配置双节点yum源163源：
 
 ```shell
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo
@@ -99,13 +99,15 @@ wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-B
 > yum clean all 清除原有yum缓存 
 > yum makecache 更新
 
+
+
 # 安装和配置组件
 
 #### controller：
 
-yum install chrony -y
+*yum install chrony -y*
 
-vi /etc/chrony.conf
+**vi /etc/chrony.conf**
 
 ```
 server ntp1.aliyun.com iburst
@@ -115,7 +117,7 @@ server ntp4.aliyun.com iburst
 allow 192.168.11.0/24
 ```
 
-重新启动 NTP 服务：
+#### 重新启动 NTP 服务：
 
 ```
 [root@controller ~]# systemctl enable chronyd.service
@@ -146,9 +148,9 @@ allow 192.168.11.0/24
 
 #### compute：
 
-yum install chrony
+*yum install chrony*
 
-vi /etc/chrony.conf
+**vi /etc/chrony.conf**
 
 ```
 server controller iburst
@@ -158,7 +160,7 @@ server controller iburst
 #server 2.centos.pool.ntp.org iburst
 ```
 
-重启服务：
+#### 重启服务：
 
 ```
 [root@compute ~]# systemctl enable chronyd.service
@@ -178,17 +180,17 @@ chronyc sources
 
 #### 两个节点安装openstack T版包：
 
-yum install centos-release-openstack-train -y
+*yum install centos-release-openstack-train -y*
 
 #### 两个节点安装openstack客户端:
 
-yum install python-openstackclient -y
+*yum install python-openstackclient -y*
 
 #### controller节点安装数据库:
 
-yum install mariadb mariadb-server python2-PyMySQL -y
+*yum install mariadb mariadb-server python2-PyMySQL -y*
 
-vi /etc/my.cnf.d/openstack.cnf
+**vi /etc/my.cnf.d/openstack.cnf**
 
 ```shell
 [mysqld]
@@ -200,18 +202,18 @@ collation-server = utf8_general_ci
 character-set-server = utf8
 ```
 
-设置数据库开机自启
+#### **设置数据库开机自启**
 
 systemctl enable mariadb.service
 systemctl start mariadb.service
 
-通过运行脚本来保护数据库服务
+#### 通过运行脚本来保护数据库服务
 
 mysql_secure_installation
 
 #### controller:消息队列
 
-yum install rabbitmq-server -y
+*yum install rabbitmq-server -y*
 
 启动：
 
@@ -220,4 +222,69 @@ systemctl enable rabbitmq-server.service
 systemctl start rabbitmq-server.service
 
 systemctl status rabbitmq-server.service
+
+#### 添加用户：`openstack`
+
+rabbitmqctl add_user openstack RABBIT_PASS #RABBIT_PASS为消息队列的密码，这时我设置123456
+
+Creating user "openstack" ...
+
+#### 配置、写入和读取访问权限：
+
+rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+
+
+
+# memcached 服务
+
+#### 安装memcached服务：
+
+*yum install memcached python-memcached*
+
+#### 编辑文件：
+
+vi`/etc/sysconfig/memcached`
+
+```
+OPTIONS="-l 127.0.0.1,::1,controller"
+```
+
+#### 启动 memcached 服务：
+
+systemctl enable memcached.service
+
+systemctl start memcached.service
+
+systemctl status mecached.service
+
+#### Etcd 服务：
+
+*yum install etcd -y*
+
+#### 编辑 etcd 文件：
+
+vi /etc/etcd/etcd.conf
+
+```
+#[Member]
+ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
+ETCD_LISTEN_PEER_URLS="http://192.168.11.140:2380" #改为自己的IP地址
+ETCD_LISTEN_CLIENT_URLS="http://192.168.11.140:2379"
+ETCD_NAME="controller"
+#[Clustering]
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://192.168.11.140:2380"
+ETCD_ADVERTISE_CLIENT_URLS="http://192.168.11.140:2379"
+ETCD_INITIAL_CLUSTER="controller=http://192.168.11.140:2380"
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"
+ETCD_INITIAL_CLUSTER_STATE="new"
+```
+
+#### 启动 etcd 服务：
+
+systemctl enable etcd
+systemctl start etcd
+
+
+
+# keystone服务
 
