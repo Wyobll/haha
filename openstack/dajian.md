@@ -1,4 +1,3 @@
-
 # 基础环境配置
 
 #### 双节点网络配置：
@@ -518,3 +517,264 @@ Repeat User Password:000000
 | password_expires_at | None                             |
 +---------------------+----------------------------------+
 ```
+
+#### 创建角色：myrole
+
+[root@controller ~]# openstack role create myrole
+
+```
++-----------+----------------------------------+
+| Field     | Value                            |
++-----------+----------------------------------+
+| domain_id | None                             |
+| id        | 997ce8d05fc143ac97d83fdfb5998552 |
+| name      | myrole                           |
++-----------+----------------------------------+
+```
+
+#### 将角色添加到项目和用户：
+
+[root@controller ~]# openstack role add --project myproject --user myuser myrole
+
+#无输出
+
+#### 请求身份验证令牌：`admin`
+
+[root@controller ~]# openstack --os-auth-url http://controller:5000/v3 \
+  --os-project-domain-name Default --os-user-domain-name Default \
+  --os-project-name admin --os-username admin token issue
+
+#### 作为在上一节中创建的用户，请求身份验证令牌：`myuser`
+
+[root@controller ~]# openstack --os-auth-url http://controller:5000/v3 \
+  --os-project-domain-name Default --os-user-domain-name Default \
+  --os-project-name myproject --os-username myuser token issue
+
+#### 创建脚本
+
+[root@controller ~]# **vi admin-openrc**
+
+```
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=000000
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+```
+
+[root@controller ~]# **vi demo-openrc**
+
+```
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=myproject
+export OS_USERNAME=myuser
+export OS_PASSWORD=DEMO_PASS
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+替换为您在标识服务中为用户选择的密码。DEMO_PASSdemo
+```
+
+#### 填充环境变量：
+
+[root@controller ~]# . admin-openrc
+
+#### 请求身份验证令牌：
+
+[root@controller ~]# openstack token issue
+
+
+
+# 镜像服务
+
+#### 使用数据库访问客户端以用户身份连接到数据库服务器：`root`
+
+[root@controller ~]# mysql -u root -p
+
+#### 创建数据库：`glance`
+
+```
+MariaDB [(none)]> CREATE DATABASE glance;
+```
+
+#### 授予对数据库的正确访问权限：`glance`
+
+```
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
+  IDENTIFIED BY '000000';
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
+  IDENTIFIED BY '000000';
+```
+
+#### 获取凭据以获取对仅限管理员的 CLI 命令的访问权限：
+
+[root@controller ~]# . admin-openrc
+
+#### 创建用户：`glance`
+
+[root@controller ~]# openstack user create --domain default --password-prompt glance
+
+#### 将角色添加到用户和项目：
+
+[root@controller ~]# openstack role add --project service --user glance admin
+
+#### 创建服务实体：`glance`
+
+[root@controller ~]# openstack service create --name glance \
+  --description "OpenStack Image" image
+
+#### 创建影像服务 API 终端节点：
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  image public http://controller:9292
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  image internal http://controller:9292
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  image admin http://controller:9292
+
+#### 安装软件包：
+
+[root@controller ~]# *yum install openstack-glance*
+
+#### 编辑文件:
+
+[root@controller ~]#`vi /etc/glance/glance-api.conf`
+
+```
+[database]
+# ...
+connection = mysql+pymysql://glance:000000@controller/glance
+```
+
+```
+[keystone_authtoken]
+# ...
+www_authenticate_uri  = http://controller:5000
+auth_url = http://controller:5000
+memcached_servers = controller:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = glance
+password = 000000
+
+[paste_deploy]
+# ...
+flavor = keystone
+```
+
+```
+[glance_store]
+# ...
+stores = file,http
+default_store = file
+filesystem_store_datadir = /var/lib/glance/images/
+```
+
+#### 填充影像服务数据库：
+
+[root@controller ~]# su -s /bin/sh -c "glance-manage db_sync" glance
+
+#### 启动映像服务并将其配置为在系统引导时启动：
+
+[root@controller ~]# systemctl enable openstack-glance-api.service
+
+[root@controller ~]# systemctl start openstack-glance-api.service
+
+[root@controller ~]# systemctl status openstack-glance_api.service
+
+
+
+# PLACEMENT服务
+
+#### 创建数据库
+
+[root@controller ~]# mysql -u root -p000000
+
+```
+MariaDB [(none)]> CREATE DATABASE placement;
+```
+
+#### 授予访问权限：
+
+```
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON placement.* TO 'placement'@'localhost' \
+  IDENTIFIED BY '000000';
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON placement.* TO 'placement'@'%' \
+  IDENTIFIED BY '000000';  
+```
+
+#### 使用您选择的以下选项创建放置服务用户：`PLACEMENT_PASS`
+
+[root@controller ~]# openstack user create --domain default --password-prompt placement 密码000000
+
+#### 将 Placement 用户添加到具有管理员角色的服务项目中：
+
+[root@controller ~]# openstack role add --project service --user placement admin
+
+#### 在服务目录中创建放置 API 条目：
+
+[root@controller ~]# openstack service create --name placement \
+  --description "Placement API" placement
+
+#### 创建放置 API 服务终端节点：
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  placement public http://controller:8778
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  placement internal http://controller:8778
+
+[root@controller ~]# openstack endpoint create --region RegionOne \
+  placement admin http://controller:8778
+
+#### 安装放置位置和所需的数据库:
+
+[root@controller ~]# *yum install openstack-placement-api -y*
+
+#### 创建文件:
+
+[root@controller ~]#`vi /etc/placement/placement.conf`
+
+```
+[placement_database]
+connection = mysql+pymysql://placement:PLACEMENT_DBPASS@controller/placement
+替换为您为放置数据库选择的密码。PLACEMENT_DBPASS 这里密码123456
+```
+
+```
+[api]
+auth_strategy = keystone  # use noauth2 if not using keystone
+
+[keystone_authtoken]
+www_authenticate_uri = http://controller:5000/
+auth_url = http://controller:5000/
+memcached_servers = controller:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = placement
+password = PLACEMENT_PASS
+替换为您在标识服务中为用户选择的密码。PLACEMENT_PASSplacement
+```
+
+#### 填充数据库：`placement`
+
+[root@controller ~]# su -s /bin/sh -c "placement-manage db sync" placement
+
+#### 重新启动 httpd 服务：
+
+[root@controller ~]# systemctl restart httpd
+
+
+
+#  nova 计算服务
+
