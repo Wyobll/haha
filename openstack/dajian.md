@@ -572,11 +572,10 @@ export OS_PROJECT_DOMAIN_NAME=Default
 export OS_USER_DOMAIN_NAME=Default
 export OS_PROJECT_NAME=myproject
 export OS_USERNAME=myuser
-export OS_PASSWORD=DEMO_PASS
+export OS_PASSWORD=000000
 export OS_AUTH_URL=http://controller:5000/v3
 export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
-替换为您在标识服务中为用户选择的密码。DEMO_PASSdemo
 ```
 
 #### 填充环境变量：
@@ -745,8 +744,8 @@ MariaDB [(none)]> GRANT ALL PRIVILEGES ON placement.* TO 'placement'@'%' \
 
 ```
 [placement_database]
-connection = mysql+pymysql://placement:PLACEMENT_DBPASS@controller/placement
-替换为您为放置数据库选择的密码。PLACEMENT_DBPASS 这里密码123456
+connection = mysql+pymysql://placement:000000S@controller/placement
+
 ```
 
 ```
@@ -762,8 +761,7 @@ project_domain_name = Default
 user_domain_name = Default
 project_name = service
 username = placement
-password = PLACEMENT_PASS
-替换为您在标识服务中为用户选择的密码。PLACEMENT_PASSplacement
+password = 000000
 ```
 
 #### 填充数据库：`placement`
@@ -853,18 +851,17 @@ enabled_apis = osapi_compute,metadata
 ```
 [api_database]
 # ...
-connection = mysql+pymysql://nova:NOVA_DBPASS@controller/nova_api
+connection = mysql+pymysql://nova:000000S@controller/nova_api
 
 [database]
 # ...
-connection = mysql+pymysql://nova:NOVA_DBPASS@controller/nova
-替换为为计算数据库选择的密码。NOVA_DBPASS
+connection = mysql+pymysql://nova:000000@controller/nova
 ```
 
 ```
 [DEFAULT]
 # ...
-transport_url = rabbit://openstack:RABBIT_PASS@controller:5672/ #RABBIT_PASS修改为消息队列设置的密码
+transport_url = rabbit://openstack:000000@controller:5672/ 
 ```
 
 ```
@@ -889,7 +886,7 @@ password = NOVA_PASS
 ```
 [DEFAULT]
 # ...
-my_ip = 10.0.0.11 修改为本机IP
+my_ip = 192.168.11.140
 ```
 
 ```
@@ -969,11 +966,11 @@ password = PLACEMENT_PASS #替换为您在安装Placement时为创建的服务�
 
 #### 配置计算节点
 
-[root@controller ~]# *yum install openstack-nova-compute*
+[root@compute ~]#*yum install openstack-nova-compute*
 
 #### 编辑文件：
 
-[root@controller ~]#`vi /etc/nova/nova.conf`
+[root@compute ~]#`vi /etc/nova/nova.conf`
 
 ```shell
 [DEFAULT]
@@ -984,7 +981,7 @@ enabled_apis = osapi_compute,metadata
 ```shell
 [DEFAULT]
 # ...
-transport_url = rabbit://openstack:RABBIT_PASS@controller 修改密码RABBIT_PASS为123456
+transport_url = rabbit://openstack:000000@controller 
 ```
 
 ```
@@ -1002,13 +999,13 @@ project_domain_name = Default
 user_domain_name = Default
 project_name = service
 username = nova
-password = NOVA_PASS #替换为您在标识服务中为用户选择的密码。NOVA_PASSnova
+password = 000000
 ```
 
 ```
 [DEFAULT]
 # ...
-my_ip = MANAGEMENT_INTERFACE_IP_ADDRESS
+my_ip = 192.168.11.141
 ```
 
 ```
@@ -1049,12 +1046,12 @@ auth_type = password
 user_domain_name = Default
 auth_url = http://controller:5000/v3
 username = placement
-password = PLACEMENT_PASS #替换为在标识服务中为用户选择的密码
+password = 000000
 ```
 
 #### 确定计算节点是否支持虚拟机的硬件加速：
 
-[root@controller ~]# egrep -c '(vmx|svm)' /proc/cpuinfo
+[root@compute ~]# egrep -c '(vmx|svm)' /proc/cpuinfo
 
 
 
@@ -1124,9 +1121,9 @@ MariaDB [(none)] CREATE DATABASE neutron;
 
 ```shell
 MariaDB [(none)]> GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'localhost' \
-  IDENTIFIED BY 'NEUTRON_DBPASS';
+  IDENTIFIED BY '000000';
 MariaDB [(none)]> GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'%' \
-  IDENTIFIED BY 'NEUTRON_DBPASS';
+  IDENTIFIED BY '000000';
 ```
 
 #### 获取凭据以获取对仅限管理员的 CLI 命令的访问权限：`admin`
@@ -1170,8 +1167,7 @@ MariaDB [(none)]> GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'%' \
 ```
 [database]
 # ...
-connection = mysql+pymysql://neutron:NEUTRON_DBPASS@controller/neutron
-替换为您为数据库选择的密码。NEUTRON_DBPASS
+connection = mysql+pymysql://neutron:000000@controller/neutron
 
  [DEFAULT]
 # ...
@@ -1179,7 +1175,7 @@ core_plugin = ml2
 service_plugins =
 [DEFAULT]
 # ...
-transport_url = rabbit://openstack:RABBIT_PASS@controller #替换为您在 RabbitMQ 中为帐户选择的密码。RABBIT_PASSopenstack
+transport_url = rabbit://openstack:000000@controller 
 [DEFAULT]
 # ...
 auth_strategy = keystone
@@ -1194,7 +1190,7 @@ project_domain_name = default
 user_domain_name = default
 project_name = service
 username = neutron
-password = NEUTRON_PASS #替换为您在标识服务中为用户选择的密码。NEUTRON_PASSneutron
+password = 000000
 
 [DEFAULT]
 # ...
@@ -1210,7 +1206,7 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = nova
-password = NOVA_PASS #替换为您在标识服务中为用户选择的密码。NOVA_PASSnova
+password = 000000
 [oslo_concurrency]
 # ...
 lock_path = /var/lib/neutron/tmp
@@ -1253,7 +1249,7 @@ enable_ipset = true
 
 ```shell
 [linux_bridge]
-physical_interface_mappings = provider:PROVIDER_INTERFACE_NAME #替换为基础提供程序物理网络接口的名称。
+physical_interface_mappings = provider:ens33 #替换为基础提供程序物理网络接口的名称。
 [vxlan]
 enable_vxlan = false
 [securitygroup]
@@ -1304,10 +1300,9 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = neutron
-password = NEUTRON_PASS
+password = 000000
 service_metadata_proxy = true
 metadata_proxy_shared_secret = METADATA_SECRET
-替换为您在标识服务中为用户选择的密码。NEUTRON_PASSneutron
 替换为为元数据代理选择的机密。METADATA_SECRET
 ```
 
@@ -1344,7 +1339,7 @@ metadata_proxy_shared_secret = METADATA_SECRET
 ```shell
 [DEFAULT]
 # ...
-transport_url = rabbit://openstack:RABBIT_PASS@controller #替换为您在 RabbitMQ 中为帐户选择的密码。RABBIT_PASSopenstack
+transport_url = rabbit://openstack:000000@controller 
 ```
 
 ```shell
@@ -1362,7 +1357,7 @@ project_domain_name = default
 user_domain_name = default
 project_name = service
 username = neutron
-password = NEUTRON_PASS #替换为您在标识服务中为用户选择的密码。`NEUTRON_PASS``neutron`
+password = 000000
 [oslo_concurrency]
 # ...
 lock_path = /var/lib/neutron/tmp
@@ -1376,7 +1371,7 @@ lock_path = /var/lib/neutron/tmp
 
 ```
 [linux_bridge]
-physical_interface_mappings = provider:PROVIDER_INTERFACE_NAME #替换为基础提供程序物理网络接口的名称
+physical_interface_mappings = provider:ens33 #替换为基础提供程序物理网络接口的名称
 [vxlan]
 enable_vxlan = false
 [securitygroup]
@@ -1405,7 +1400,7 @@ user_domain_name = default
 region_name = RegionOne
 project_name = service
 username = neutron
-password = NEUTRON_PASS #替换为您在标识服务中为用户选择的密码。NEUTRON_PASSneutron
+password = 000000
 ```
 
 #### 重新启动计算服务：
@@ -1422,11 +1417,11 @@ password = NEUTRON_PASS #替换为您在标识服务中为用户选择的密码�
 
 # **dashboard**服务
 
-[root@controller ~]#*yum install openstack-dashboard*
+[root@controller ~]# *yum install openstack-dashboard*
 
 #### 编辑文件：
 
-[root@controller ~]#`vi /etc/openstack-dashboard/local_settings`
+[root@controller ~]# `vi /etc/openstack-dashboard/local_settings`
 
 ```
 OPENSTACK_HOST = "controller"
