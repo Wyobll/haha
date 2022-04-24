@@ -220,7 +220,7 @@ MySQL Server 8.0/bin
   | UNSIGNED           | 无符号                   |
   | CHARACTER SET name | 指定一个字符集           |
 
-  ### 二、MYSQL数据类型的长度和范围
+  **二、MYSQL数据类型的长度和范围**
 
   各数据类型及字节长度一览表：
 
@@ -263,7 +263,9 @@ MySQL Server 8.0/bin
   | MultiPolygon       |          |                                                              |
   | GeometryCollection |          |                                                              |
 
-  ### 三、使用建议
+  
+
+  **三、使用建议**
 
   1、在指定数据类型的时候一般是采用从小原则，比如能用TINY INT的最好就不用INT，能用FLOAT类型的就不用DOUBLE类型，这样会对MYSQL在运行效率上提高很大，尤其是大数据量测试条件下。
 
