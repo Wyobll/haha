@@ -125,7 +125,7 @@ MySQL Server 8.0/bin
     ... ,
     ... ,
     ...最后一个字段没有参数，
-    ）
+    ）；
     ```
 
     
@@ -279,13 +279,53 @@ MySQL Server 8.0/bin
 
 
 
+表操作-修改
 
+* DDL
 
+  * 添加字段
 
+    ```shell
+    alter table 表名 add 字段名 类型（长度）[comment 注释][约束]；
+    ```
 
+  * 修改字段名和字段类型
 
+    ```shell
+    alter table 表名 change 旧字段名 新字段名 类型（长度）[comment 注释][约束]；
+    ```
 
+  * 删除字段
 
+    ```shell
+    alter table 表名 drop 字段名；
+    ```
+
+  * 修改表名
+
+    ```shell
+    alter table 表名 rename to 新表名；
+    ```
+
+    
+
+表操作-删除
+
+* DDL
+
+  * 删除表
+
+    ```shell
+    drop table [if exists] 表名；
+    ```
+
+  * 删除指定表，并重新创建该表
+
+    ```shell
+    truncate table 表名；
+    ```
+
+    
 
 
 
