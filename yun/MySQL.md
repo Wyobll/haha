@@ -372,4 +372,96 @@ MySQL Server 8.0/bin
 
 
 * DML-修改数据
+  
   * 
+  
+    ```shell
+    update 表名 set 字段名1=值1，字段2=值2，...[where 条件]；
+    ```
+  
+    
+
+* DML-删除数据
+
+  * 
+
+    ```shell
+    delete from 表名 [where 条件]
+    ```
+
+    
+
+**常用参数:**
+
+> -A 不预读数据库信息，提高连接和切换数据库速度,使用--disable-auto-rehash代替
+> --default-character-set  使用的默认字符集
+> -e 执行命令并退出
+> -h 主机地址
+> -p 连接到服务器时使用的密码
+> -P 连接的端口号
+
+
+
+**change和modify:**
+
+> 1 前者可以修改列名称,后者不能. 
+> 2 change需要些两次列名称.
+
+
+
+**字段增加修改 add/change/modify/ 添加顺序:**
+
+> 1 add 增加在表尾.
+> 2 change/modify 不该表字段位置.
+> 3 修改字段可以带上以下参数进行位置调整(frist/after column_name);
+>
+> alter table emp change age age int(2) after ename;
+> alter table emp change age age int(3) first;
+
+
+
+* DQL
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+* DCL
+
+  
+
+
+
+
+
+
+
+
+
+**float , double , decimal 特点:**
+
+> 1.(m,d)表示方式:m指的是整数位,d指的是小数位(又称作精度和标度)
+> 2.float/double四舍五入丢失精度,decimal会截断数据并输出warning
+> 3.如果不指定精度,float/double采用操作系统默认,decimal则是(10,0)
+
+
+
+**timestamp和datetime区别:**
+
+> - timestamp支持范围小(1970-01-01 08:00:01到2038年某个点)
+> - 表中第一个timestamp字段,会默认采用当前系统时间.如果更新其他字段,该字段没有赋值的话,则该字段会自动更新.如果指定字段不满足规格,则采用零值填充
+> - timestamp查询和插入都会受到当地时区影响
+> -  datetime支持范围宽度大(1000-01-01 00:00:00到9999-12-31 23:23:59)
+
+
+
