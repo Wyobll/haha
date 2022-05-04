@@ -389,7 +389,9 @@ MySQL Server 8.0/bin
     delete from 表名 [where 条件]
     ```
 
-    
+
+
+
 
 **常用参数:**
 
@@ -420,29 +422,193 @@ MySQL Server 8.0/bin
 
 
 
-* DQL
+* DQL-基本查询
+
+  * 查询多个字
+
+  ```shell
+  select 字段1，字段2，字段3...from 表名；
+  ```
+
+  ```shell
+  select * from 表名；
+  ```
+
+  * 设置别名
+
+    ````shell
+    select 字段1 [as 别名1]，字段2 [as 别名2]...from 表名；
+    ````
+
+  * 去除重复记录
+
+    ```shell
+    select distinct 字段列表 from表名；
+    ```
+
+  DQL-条件查询
+
+  * 
+
+    ```shell
+    select 字段列表 from 表名 where 条件列表；
+    ```
+
+  DQL-聚合函数
+
+  * | 函数  | 功能     |
+    | ----- | -------- |
+    | count | 统计数量 |
+    | max   | 最大值   |
+    | min   | 最小值   |
+    | avg   | 平均值   |
+    | sum   | 求和     |
+
+  * 
+
+    ```shell
+    select 聚合函数(字段列表) from 表名；
+    ```
+
+    注意：null值不参与所有聚合函数运算
+
+  DQL-分组查询
+
+  * 
+
+    ```shell
+    select 字段列表 from 表名 [where 条件] group by 分组字段名 [having 分组后过滤条件]；
+    ```
+
+  ​    
+
+  列：根据性别分组统计男性员工和女性员工的数量
+
+     **select gender，count(*) from wy group by gender;**
 
   
 
+  where和having的区别：
 
-
-
-
-
-
-
-
-
-
-
-
-* DCL
+  > 执行时机不同：where是分组之前进行过滤，不满足where条件，不参与分组；而having是分组之后对结果进行过滤。
+  >
+  > 判断条件不同：where不能对聚合函数进行判断，而having可以。
 
   
 
+  注意： 
+
+  执行顺序：where>聚合函数>having
+
+  分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义。
+
+  
+
+  > select 字段列表
+  >
+  > from 表名列表
+  >
+  > where 条件列表
+  >
+  > group by 分组字段列表
+  >
+  > having 分组后条件列表
+  >
+  > order by 排序字段列表
+  >
+  > limit 分页参数
+
+   DQL-排序查询
+
+```sgell
+select 字段列表 from 表名 order by 字段1 排序方式1，字段2 排序方式2；
+```
+
+排序方式
+
+ASC：升序asc 可以省略默认排序
+
+DESC：降序desc
+
+​    DQL-分页查询
+
+```shell
+select 字段列表 from 表名 limit 起始索引，查询记录数；
+```
+
+ 
+
+​    注意：
+
+   起始索引从0开始，起始索引=(查询页码-1)*每页显示记录数
+
+   分页查询是数据库的方言，不同的数据库有不同的实现，MySQL中是limit
+
+   如果查询的是第一页数据，起始索引可以省略，直接简写为limit10
 
 
 
+* DCL-管理用户
+
+  * 查询用户
+
+    ```shell
+    use mysql;
+    select * from user;
+    ```
+
+  * 创建用户
+
+    ```shell
+    create user '用户名'@'主机名' identified by '密码'；
+    ```
+
+  * 修改用户密码
+
+    ```shell
+    alter user '用户名'@'主机名' identified with mysql_native_password by '新密码'；
+    ```
+
+  * 删除用户
+
+    ```shell
+    drop user '用户名'@'主机名';
+    ```
+
+    
+
+* DCL-权限控制
+
+  * 查询权限
+
+    ```shell
+    show grants for '用户名'@'主机名'；
+    ```
+
+  * 授予权限
+
+    ```shell
+    grant 权限列表 on 数据库名 表名 to '用户名'@'主机名'；
+    ```
+
+  * 撤销权限
+
+    ```shell
+    revoke 权限列表 on 数据库名 表名 from '用户名'@'主机名'；
+    ```
+
+    
+
+| 权限                | 说明               |
+| ------------------- | ------------------ |
+| all，all privileges | 所有权限           |
+| select              | 查询数据           |
+| insert              | 插入数据           |
+| update              | 修改数据           |
+| delete              | 删除数据           |
+| alter               | 修改表             |
+| drop                | 删除数据库/表/视图 |
+| create              | 创建数据库/表      |
 
 
 
