@@ -44,3 +44,48 @@
 * cinder支持多种存储平台
 * 块设备适用于对性能要求较高的应用场景：比如数据库
 * 块设备的快照功能可以实现基于块存储卷的数据备份，而且也可以利用快照进行数据恢复
+
+
+
+
+
+---
+
+路由器管理
+
+AR1:
+
+```shell
+undo terminal monitor
+system-view
+sysname AR1
+interface GigabitEthernet 0/0/1
+ip address 192.168.1.1 30
+quit
+interface GigabitEthernet 0/0/2
+ip address 192.168.2.1 24
+quit
+ospf 1
+area 0
+network 192.168.1.0 0.0.0.3
+network 192.168.2.0 0.0.0.255
+```
+
+AR2:
+
+```shell
+undo terminal monitor
+system-view
+sysname AR2
+interface GigabitEthernet 0/0/1
+ip address 192.168.1.2 30
+quit
+interface GigabitEthernet 0/0/2
+ip address 192.168.3.1 24
+quit
+ospf 1
+area 0
+network 192.168.1.0 0.0.0.3
+network 192.168.3.0 0.0.0.255
+```
+
