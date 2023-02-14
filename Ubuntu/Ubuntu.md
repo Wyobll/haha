@@ -4,7 +4,7 @@
 
 * ## 基本命令
 
-  ~~~
+  ~~~assembly
   
   ls:显示当前目录下的内容
   
@@ -18,7 +18,7 @@
 
 * ## 快捷键
 
-  ```
+  ```assembly
   CTRL + ALT + T：打开新的终端
   SHIFT + CTRL + T：在当前终端同级打开新的终端
   TAB：自动补全命令或文件名
@@ -35,7 +35,7 @@
 
 * ## 权限
 
-  ```
+  ```assembly
   r 读取 4（数字表示） 可以读取文件夹目录内容
   w 读取 2（数字表示） 可以在文件夹内新建删除文件
   x 读取 1（数字表示） 可以进入到文件夹内
@@ -45,7 +45,7 @@
 
 * ## 系统管理命令
 
-  ```
+  ```assembly
   fdisk -l #查看系统分区信息
   fdisk /dev/sdb #为一块新的 SCSI 硬盘进行分区
   chown root /home #把/home 的属主改成 root 用户
@@ -76,7 +76,7 @@
 
 * ## 打包/解压 
 
-  ```
+  ```assembly
   tar -c 创建包 –x 释放包 -v 显示命令过程 –z 代表压缩包
   tar –cvf benet.tar /home/benet 把/home/benet目录打包
   tar –zcvf benet.tar.gz /mnt 把目录打包并压缩
@@ -86,14 +86,14 @@
 
 * ## make编译
 
-  ```
+  ```assembly
   make 编译
   make install 安装编译好的源码包 
   ```
 
 * ## apt命令 
 
-  ```
+  ```assembly
   apt-cache search package     #搜索包
   apt-cache show package     #获取包的相关信息，如说明、大小、版本等
   sudo apt-get install package     #安装包
@@ -113,5 +113,3 @@
   sudo apt-get check     #检查是否有损坏的依赖
   sudo apt-get clean     #清理所有软件缓存（即缓存在/var/cache/apt/archives目录里的deb包）
   ```
-
-  
