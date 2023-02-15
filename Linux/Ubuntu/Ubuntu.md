@@ -73,7 +73,6 @@
   kill -9 进程号     #强制杀死一个进程 
   ```
   
-
 * ## 打包/解压 
 
   ```assembly
@@ -113,3 +112,8 @@
   sudo apt-get check     #检查是否有损坏的依赖
   sudo apt-get clean     #清理所有软件缓存（即缓存在/var/cache/apt/archives目录里的deb包）
   ```
+
+
+
+
+
