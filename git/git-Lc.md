@@ -188,3 +188,4 @@ $ git config --global user.email "email@example.com"
   $ cat .git/config //查看每个仓库的git配置文件
   $ cat .gitconfig  //查看当前用户的git配置文件
   ```
+

@@ -5,17 +5,14 @@
 * ## 基本命令
 
   ~~~assembly
-  
   ls:显示当前目录下的内容
-  
   cd [+目录名]：切换文件夹
-  
   touch [+文件名]：在当前目录下新建一个文件
   mkdir [+目录名]：在当前目录下创建一个文件夹(创建目录)
   rm [+文件名]：删除指定的文件名
   clear：清屏
   ~~~
-
+  
 * ## 快捷键
 
   ```assembly
@@ -92,7 +89,7 @@
 
 * ## apt命令 
 
-  ```assembly
+  ```commonlisp
   apt-cache search package     #搜索包
   apt-cache show package     #获取包的相关信息，如说明、大小、版本等
   sudo apt-get install package     #安装包
@@ -115,5 +112,56 @@
 
 
 
+* ## 用户管理和文件权限
 
+  **`Ubuntu`系统中需要在系统安装完成之后，启用root账号（设置root账号密码）**
 
+  ```
+  sudo passwd root
+  ```
+
+  查看用户id id ashin
+
+  **添加用户（useradd）**
+
+  address （在当前系统下，封装了原本的useradd函数）
+
+  ```ceylon
+  adduser ashin02
+  ：设置密码
+  ：确认密码
+  ：输入用户信息（回车使用默认信息）
+  ```
+
+  创建完成之后，可以查看系统为当前用户自动创建同名组ashin02，在/etc/passwd下，新增了该用户相关配置信息，用户添加命令还为该用户创建了一个家模流/home/ashin02，作为该用户的主目录。所有者为ashin02
+
+  在创建用户的时候，指定加入某个组，而不是新建一个组：
+
+  ```
+  adduser --ingroup root ashin02
+  ```
+
+  **设置密码**
+
+  使用passwd命令，修改其他用户的密码（只有root用户才可以给其他账户设置密码，普通用户只能修改自己的密码）
+
+  ```
+  passwd ashin02
+  ```
+
+  **删除用户deluser**
+
+  ```
+  deluser ashin02
+  ```
+
+  **用户间切换su**
+
+  su switch user
+
+  ```ceylon
+  su - user （连带用户环境配置一起修改切换）
+  su user1 （不会切换用户环境系统变量）
+  ```
+
+  
