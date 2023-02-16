@@ -89,7 +89,7 @@
 
 * ## apt命令 
 
-  ```commonlisp
+  ```ABAP
   apt-cache search package     #搜索包
   apt-cache show package     #获取包的相关信息，如说明、大小、版本等
   sudo apt-get install package     #安装包
