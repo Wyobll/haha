@@ -73,7 +73,7 @@
 * ## 打包/解压 
 
   ```assembly
-  tar -c 创建包 –x 释放包 -v 显示命令过程 –z 代表压缩包
+  tar  - c 创建包 –x 释放包 -v 显示命令过程 –z 代表压缩包
   tar –cvf benet.tar /home/benet 把/home/benet目录打包
   tar –zcvf benet.tar.gz /mnt 把目录打包并压缩
   tar –zxvf benet.tar.gz 压缩包的文件解压恢复
@@ -93,10 +93,10 @@
   apt-cache search package     #搜索包
   apt-cache show package     #获取包的相关信息，如说明、大小、版本等
   sudo apt-get install package     #安装包
-  sudo apt-get install package - - reinstall     #重新安装包
-  sudo apt-get -f install     #修复安装”-f = –fix-missing”
+  sudo apt-get install package -- reinstall     #重新安装包
+  sudo apt-get -f install     #修复安装”-f =–fix-missing”
   sudo apt-get remove package     #删除包
-  sudo apt-get remove package - - purge     #删除包，包括删除配置文件等
+  sudo apt-get remove package -- purge     #删除包，包括删除配置文件等
   sudo apt-get update     #更新源
   sudo apt-get upgrade     #更新已安装的包
   sudo apt-get dist-upgrade     #升级系统
