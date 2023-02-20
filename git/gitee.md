@@ -71,122 +71,122 @@ $ git config --global user.email "email@example.com"
 * ## **创建版本库**
 
   ```kotlin
-  $ mkdir learngit    //创建
-  $ cd learngit   //使用
-  $ pwd   //查看当前目录
-  $ git init  //初始化，生成.git文件(若该文件隐藏，则使用ls -ah)
+   mkdir learngit    //创建
+   cd learngit   //使用
+   pwd   //查看当前目录
+   git init  //初始化，生成.git文件(若该文件隐藏，则使用ls -ah)
   ```
 
 * ## **添加add和提交commit**
 
   ```csharp
-  $ git add test.txt  //添加
-  $ git commit -m "wrote a test file" //提交
-  $ git commit -m "add 3 files."      //一次性提交多个文件
+   git add test.txt  //添加
+   git commit -m "wrote a test file" //提交
+   git commit -m "add 3 files."      //一次性提交多个文件
   注意：必须在当前版本库和当前目录下
   ```
 
 * ## **版本控制**
 
   ```cpp
-  $ git log   //查看提交历史记录，从最近到最远，可以看到3次
-  $ git log --pretty=oneline  //加参，简洁查看
-  $ git reflog    //查看每一次修改历史
-  $ cat test.txt  //查看文件内容
-  $ git status    //查看工作区中文件当前状态
-  $ git reset --hard HEAD^（HEAD~100）（commit id）   //回退版本
-  $ git checkout -- test.txt  //丢弃工作区的修改，即撤销修改
-  $ git reset HEAD test.txt   //丢弃暂存区的修改（若已提交，则回退）
+   git log   //查看提交历史记录，从最近到最远，可以看到3次
+   git log --pretty=oneline  //加参，简洁查看
+   git reflog    //查看每一次修改历史
+   cat test.txt  //查看文件内容
+   git status    //查看工作区中文件当前状态
+   git reset --hard HEAD^（HEAD~100）（commit id）   //回退版本
+   git checkout -- test.txt  //丢弃工作区的修改，即撤销修改
+   git reset HEAD test.txt   //丢弃暂存区的修改（若已提交，则回退）
   ```
 
 * ## **删除文件**
 
   ```cpp
-  $ rm test.txt
+   rm test.txt
   //直接删除
-  $ git rm test.txt
-  $ git commit -m "remove test.txt"
+   git rm test.txt
+   git commit -m "remove test.txt"
   //删错了，恢复
-  $ git checkout -- test.txt
+   git checkout -- test.txt
   ```
 
 * ## **远程仓库**
 
   ```dart
-  $ ssh-keygen -t rsa -C "youremail@example.com"  //创建SSH Key
-  $ git remote add origin git@github.com:Daisy/AKgit.git  //关联
-  $ git push -u origin master //将本地内容推送到远程仓库（第一次）
-  $ git push origin master    //将本地内容推送到远程仓库（之后）
-  $ git remote -v        //查看远程仓库信息
-  $ git remote rm origin  //删除远程仓库（解绑）
-  $ git clone git@github.com: Daisy/AKgit.git //克隆远程仓库
+   ssh-keygen -t rsa -C "youremail@example.com"  //创建SSH Key
+   git remote add origin git@github.com:Daisy/AKgit.git  //关联
+   git push -u origin master //将本地内容推送到远程仓库（第一次）
+   git push origin master    //将本地内容推送到远程仓库（之后）
+   git remote -v        //查看远程仓库信息
+   git remote rm origin  //删除远程仓库（解绑）
+   git clone git@github.com: Daisy/AKgit.git //克隆远程仓库
   //克隆之后使用和查看
-  $ cd gitskills
-  $ ls
-  $ git remote    //查看远程库的信息
-  $ git remote -v //查看远程库的详细信息
+   cd gitskills
+   ls
+   git remote    //查看远程库的信息
+   git remote -v //查看远程库的详细信息
   ```
 
 * ## **多人协作**
 
   ```cpp
-  $ git checkout -b dev   //创建并切换到分支dev
+   git checkout -b dev   //创建并切换到分支dev
   //创建并切换到分支dev，同上
-  $ git branch dev    //创建
-  $ git checkout dev  //切换
+   git branch dev    //创建
+   git checkout dev  //切换
   //新版本
-  $ git switch -c dev //创建并切换到分支dev
-  $ git switch master //直接切换分支
-  $ git branch        //查看当前分支
-  $ git merge dev （--no-ff）(-m)//合并，把dev分支的工作成果合并到master分支上
-  $ git branch -d dev //删除dev分支 
+   git switch -c dev //创建并切换到分支dev
+   git switch master //直接切换分支
+   git branch        //查看当前分支
+   git merge dev （--no-ff）(-m)//合并，把dev分支的工作成果合并到master分支上
+   git branch -d dev //删除dev分支 
   
-  $ git stash //将现场储藏起来
-  $ git stash list    //查看储存的工作现场
+   git stash //将现场储藏起来
+   git stash list    //查看储存的工作现场
   //恢复和删除
-  $ git stash apply
-  $ git stash drop
+   git stash apply
+   git stash drop
   //恢复并删除
-  $ git stash pop
-  $ git cherry-pick 4c805e2   //复制修改
+   git stash pop
+   git cherry-pick 4c805e2   //复制修改
   
-  $ git push origin master（dev）   //推送分支
-  $ git checkout -b dev origin/dev    //创建远程origin的dev分支到本地
-  $ git pull  //抓取分支（解决冲突）
-  $ git branch --set-upstream-to=origin/dev dev//指定本地与远程dev的链接
-  $ git rebase    //把本地未push的分叉提交历史整理成直线
+   git push origin master（dev）   //推送分支
+   git checkout -b dev origin/dev    //创建远程origin的dev分支到本地
+   git pull  //抓取分支（解决冲突）
+   git branch --set-upstream-to=origin/dev dev//指定本地与远程dev的链接
+   git rebase    //把本地未push的分叉提交历史整理成直线
   ```
 
 * ## **标签管理**
 
   ```cpp
-  $ git tag v1.0  //打标签
-  $ git tag -a v0.1 -m "version 0.1 released" 1094adb //指定标签名和说明文字
-  $ git tag   //查看所有标签
+   git tag v1.0  //打标签
+   git tag -a v0.1 -m "version 0.1 released" 1094adb //指定标签名和说明文字
+   git tag   //查看所有标签
   //若是忘记打，则查找历史提交commit id ，再打上
-  $ git log --pretty=oneline --abbrev-commit
-  $ git tag v0.9 f52c633
-  $ git show v0.9     //查看标签详细信息
-  $ git tag -d v0.1   //删除标签
-  $ git push origin v1.0  //推送标签到远程
-  $ git push origin –tags //一次性推送全部本地标签
+   git log --pretty=oneline --abbrev-commit
+   git tag v0.9 f52c633
+   git show v0.9     //查看标签详细信息
+   git tag -d v0.1   //删除标签
+   git push origin v1.0  //推送标签到远程
+   git push origin –tags //一次性推送全部本地标签
   //删除标签，（若已推送到远程，先从本地删除，从远程删除）
-  $ git tag -d v0.9
-  $ git push origin :refs/tags/v0.9 
+   git tag -d v0.9
+   git push origin :refs/tags/v0.9 
   ```
 
 * ## **自定义git**
 
   ```csharp
-  $ git config --global color.ui true //让git显示颜色
+   git config --global color.ui true //让git显示颜色
   
-  $ git config --global alias.st status   //配置别名
-  $ git config --global alias.unstage 'reset HEAD'  //配置操作别名
-  $ git config --global alias.last 'log -1'   //显示最后一次提交信息
-  $ git last  //显示最近一次的提交
-  $git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"  //颜色
-  $ cat .git/config //查看每个仓库的git配置文件
-  $ cat .gitconfig  //查看当前用户的git配置文件
+   git config --global alias.st status   //配置别名
+   git config --global alias.unstage 'reset HEAD'  //配置操作别名
+   git config --global alias.last 'log -1'   //显示最后一次提交信息
+   git last  //显示最近一次的提交
+  git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"  //颜色
+   cat .git/config //查看每个仓库的git配置文件
+   cat .gitconfig  //查看当前用户的git配置文件
   ```
 
 * ## **文件内常用命令**
